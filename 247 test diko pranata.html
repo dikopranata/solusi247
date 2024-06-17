@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<title>Single Page Solusi 247</title>
+<!-- <link rel="stylesheet" href="styles.css">  optional, untuk styling -->
+<style>
+    .box {
+        width: 5px;
+        height: 5px;
+        background-color: teal;
+        margin: 10px;
+        display: inline-block;
+    }
+    .panel {
+            max-height: 10000px; /* Set the maximum height you want */
+            overflow-y: auto;  /* Add a scrollbar if the content exceeds max height */
+            border: 1px solid #000; /* Optional: to make the panel visible */
+            padding: 10px; /* Optional: to add some padding inside the panel */
+        }
+        
+        body, ul, li {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container for the navigation tabs */
+        .nav {
+            list-style: none;
+            display: flex;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        /* Individual tab style */
+        .nav-tabs li {
+            margin-right: 10px;
+        }
+
+        /* Link style */
+        .nav a {
+            display: block;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: #333;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Active tab style */
+        .nav a.active {
+            border-color: #ccc;
+            border-bottom-color: #fff;
+            background-color: #fff;
+            color: #000;
+        }
+
+        /* Content for each tab */
+        .tab-content {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+
+        .tab-content > div {
+            display: none;
+        }
+
+        .tab-content > div.active {
+            display: block;
+        }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<header>
+    <h1>Diko Pranata</h1>
+</header>
+<main>
+
+    <ul class="nav nav-tabs">
+        <li><a href="#home" class="active">Satu</a></li>
+        <li><a href="#profile">Dua</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="home" class="active">Selamat datang di Tab Satu!
+            <div class="container">
+                <div class="row"> 
+                <div class="col-lg-8">
+                    <div class="container">
+                        <textarea id="inputText" width="100px" placeholder="Masukkan teks Bahasa Indonesia"></textarea>
+                        <button onclick="processText()">Proses</button>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="container">
+                    <table id="wordTable">
+                        <thead>
+                            <tr>
+                                <th>Kata</th>
+                                <th>Jumlah Kata</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div id="profile">Ini adalah Tab Kotak persegi
+            <div class="container">
+                <div class="row">
+                    <div class="div-center">
+                    <input type="number" id="numBoxes" placeholder="Jumlah Kotak (max 10000)">
+                    <button onclick="generateBoxes()">Generate</button>
+                    <div class="panel">    
+                        <div id="kotakcontainer">kotak: 
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</main>
+
+<footer>
+    <p>Tanggal Pengerjaan: 17 Juni 2024</p>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+            const tabs = document.querySelectorAll('.nav-tabs a');
+            const contents = document.querySelectorAll('.tab-content > div');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    // Remove active class from all tabs
+                    tabs.forEach(item => item.classList.remove('active'));
+
+                    // Add active class to the clicked tab
+                    tab.classList.add('active');
+
+                    // Hide all tab contents
+                    contents.forEach(content => content.classList.remove('active'));
+
+                    // Show content for the clicked tab
+                    const activeContent = document.querySelector(tab.getAttribute('href'));
+                    activeContent.classList.add('active');
+                });
+            });
+        });
+// Fungsi untuk memproses teks pada Tab 1
+function processText() {
+    var inputText = document.getElementById('inputText').value;
+    var words = inputText.toLowerCase().match(/\b\w+\b/g); // regex untuk mencari kata
+    var wordCounts = {};
+    
+    // Menghitung jumlah kata
+    words.forEach(function(word) {
+        wordCounts[word] = (wordCounts[word] || 0) + 1;
+    });
+
+    // Mengisi tabel dengan kata-kata unik dan jumlahnya
+    var tableBody = document.getElementById('wordTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';
+
+    Object.keys(wordCounts).sort().forEach(function(key) {
+        var row = tableBody.insertRow();
+        row.insertCell(0).textContent = key;
+        row.insertCell(1).textContent = wordCounts[key];
+        var deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.onclick = function() {
+            deleteRow(key);
+        };
+        row.insertCell(2).appendChild(deleteButton);
+    });
+}
+
+// Fungsi untuk menghapus baris pada tabel dan kata-kata yang sama dari textarea
+function deleteRow(word) {
+    var textArea = document.getElementById('inputText');
+    var currentValue = textArea.value.toLowerCase();
+    var regex = new RegExp('\\b' + word + '\\b', 'gi');
+    textArea.value = currentValue.replace(regex, '');
+
+    processText(); // memproses ulang teks setelah penghapusan
+}
+
+// Fungsi untuk menghasilkan kotak-kotak pada Tab 2
+function generateBoxes() {
+    var numBoxes = parseInt(document.getElementById('numBoxes').value);
+    var boxContainer = document.getElementById('kotakcontainer');
+    boxContainer.innerHTML = '';
+
+    if (numBoxes > 0 && numBoxes <= 10000) {
+        var boxSize = 100 / Math.ceil(Math.sqrt(numBoxes)); // ukuran kotak
+
+        for (var i = 0; i < numBoxes; i++) {
+            // Create a new div element with the box class
+            var newBox = $('<div></div>').addClass('box').css({
+                        'width': boxSize,
+                        'height': boxSize
+                    });
+            
+            // Append the new box to the container
+            $('#kotakcontainer').append(newBox);
+
+            //var box = document.createElement('div');
+            // newBox.className = 'box';
+            // newBox.style.width = boxSize + '%';
+            // newBox.style.height = boxSize + '%';
+            // boxContainer.appendChild(newBox);
+        }
+    } else {
+        alert('Masukkan jumlah kotak antara 1 hingga 10000.');
+    }
+}
+
+</script> <!-- file JavaScript untuk interaktivitas -->
+</body>
+</html>
